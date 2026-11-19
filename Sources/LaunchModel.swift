@@ -104,6 +104,10 @@ import SwiftUI
         page = min(max(0, new), pageCount - 1)
     }
     func clearFolder() { editingName = false; folderID = nil; resetPage(previousPage) }
+    func dismissCurrentLevel() {
+        if folderID != nil { clearFolder() }
+        else { close() }
+    }
     private func openFolder(_ id: String) {
         previousPage = page
         folderID = id

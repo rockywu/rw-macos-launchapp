@@ -369,10 +369,7 @@ struct LauncherView: View {
                                   pageCount: model.pageCount) else { return }
         if let item = tile(at: point, metrics: m) { activate(item) }
         else if model.editingName { model.rename(nameDraft) }
-        else if let panel = m.panel {
-            if !panel.contains(point) { model.clearFolder() }
-        }
-        else { model.close() }
+        else if m.panel?.contains(point) != true { model.dismissCurrentLevel() }
     }
 
     private func tile(at point: CGPoint, metrics m: Metrics) -> GridItemValue? {

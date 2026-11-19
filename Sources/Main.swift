@@ -380,7 +380,7 @@ final class LauncherWindow: NSWindow {
                   event.keyCode == 53,
                   event.modifierFlags.intersection([.command, .control, .option, .shift]).isEmpty
             else { return event }
-            self.hide(restore: true, animated: false)
+            if !event.isARepeat { self.model.dismissCurrentLevel() }
             return nil
         }
         NSApp.activate()
