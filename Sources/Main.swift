@@ -237,7 +237,11 @@ final class LauncherWindow: NSWindow {
         bar.button?.image = image
         bar.button?.toolTip = toolName
         bar.menu = menu
-        bar.isVisible = menuBarIconVisible
+        if !gestureEnabled && !menuBarIconVisible {
+            setMenuBarIconVisible(true)
+        } else {
+            bar.isVisible = menuBarIconVisible
+        }
         menuNeedsUpdate(menu)
         let nc = NSWorkspace.shared.notificationCenter
         nc.addObserver(self, selector: #selector(sleep), name: NSWorkspace.willSleepNotification, object: nil)
@@ -253,11 +257,27 @@ final class LauncherWindow: NSWindow {
     @objc private func sleep() { SystemPinchStop(); TouchStop(); gestureOK = false; systemGestureOK = false }
     @objc private func reconnect() { TouchStop(); updateGesture() }
     @objc private func toggleGesture() {
+        guard canToggleEntryPoint(#selector(toggleGesture)) else { return }
         UserDefaults.standard.set(gestureEnabled, forKey: "gestureDisabled")
         updateGesture()
+        menuNeedsUpdate(menu)
     }
     @objc private func toggleMenuBarIcon() {
-        let visible = !menuBarIconVisible
+        guard canToggleEntryPoint(#selector(toggleMenuBarIcon)) else { return }
+        setMenuBarIconVisible(!menuBarIconVisible)
+        menuNeedsUpdate(menu)
+    }
+    private func canToggleEntryPoint(_ action: Selector?) -> Bool {
+        switch action {
+        case #selector(toggleGesture):
+            return !gestureEnabled || menuBarIconVisible
+        case #selector(toggleMenuBarIcon):
+            return !menuBarIconVisible || gestureEnabled
+        default:
+            return true
+        }
+    }
+    private func setMenuBarIconVisible(_ visible: Bool) {
         UserDefaults.standard.set(!visible, forKey: menuBarIconHiddenKey)
         bar.isVisible = visible
     }
@@ -445,7 +465,11 @@ final class LauncherWindow: NSWindow {
     }
 }
 
-extension Launcher: NSMenuDelegate, NSWindowDelegate {
+extension Launcher: NSMenuDelegate, NSMenuItemValidation, NSWindowDelegate {
+    func validateMenuItem(_ menuItem: NSMenuItem) -> Bool {
+        canToggleEntryPoint(menuItem.action)
+    }
+
     func menuNeedsUpdate(_ m: NSMenu) {
         let language = model.language
         for (item, key) in optionsItems where !item.isSeparatorItem {
