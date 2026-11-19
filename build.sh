@@ -13,6 +13,7 @@ bundle="$scratch/RWLaunch.app"
 mkdir -p "$bundle/Contents/MacOS" "$bundle/Contents/Resources" "$scratch/AppIcon.iconset"
 cp Assets/Info.plist "$bundle/Contents/Info.plist"
 cp Assets/OpenMultitouchSupport-LICENSE.txt "$bundle/Contents/Resources/"
+cp -R Assets/zh-Hans.lproj "$bundle/Contents/Resources/"
 xcrun swift Assets/Icon.swift "$scratch/AppIcon.iconset"
 iconutil -c icns "$scratch/AppIcon.iconset" -o "$bundle/Contents/Resources/RWLaunch.icns"
 for arch in arm64 x86_64; do

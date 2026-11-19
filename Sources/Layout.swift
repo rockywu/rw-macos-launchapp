@@ -83,7 +83,7 @@ struct LaunchLayout: Codable, Equatable {
                 let key = UUID().uuidString
                 root.remove(at: origin)
                 if let i = root.firstIndex(of: target) { root[i] = .folder(key) }
-                let name = newFolderName.flatMap(Self.validFolderName) ?? "新建文件夹"
+                let name = newFolderName.flatMap(Self.validFolderName) ?? "New Folder"
                 folders[key] = LaunchFolder(name: name, apps: [dest, id])
                 return key
             case .folder(let key):

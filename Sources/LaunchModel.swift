@@ -2,6 +2,8 @@ import AppKit
 import SwiftUI
 
 @MainActor final class LaunchModel: ObservableObject {
+    @Published private(set) var languagePreference: LanguagePreference
+    var language: AppLanguage { languagePreference.language }
     @Published var query = "" { didSet { if oldValue != query { resetPage() } } }
     @Published private(set) var page = 0
     @Published private(set) var folderID: String?
@@ -17,6 +19,7 @@ import SwiftUI
     private var available: Set<String> = []
     private let prefs: UserDefaults
     private let layoutKey = "applicationGrid.v1"
+    private let languageKey = "interfaceLanguage"
     private var previousPage = 0
     static let rootCapacity = 35
     nonisolated static let folderColumns = 4
@@ -29,6 +32,13 @@ import SwiftUI
            testSuite.hasPrefix("local.pinchlaunch.layout-test."), let suite = UserDefaults(suiteName: testSuite) {
             prefs = suite
         } else { prefs = .standard }
+        languagePreference = prefs.string(forKey: languageKey).flatMap(LanguagePreference.init(rawValue:)) ?? .system
+    }
+
+    func setLanguage(_ selection: LanguagePreference) {
+        guard selection != languagePreference else { return }
+        prefs.set(selection.rawValue, forKey: languageKey)
+        languagePreference = selection
     }
 
     var folderName: String { folderID.flatMap { layout.folders[$0]?.name } ?? "" }
@@ -109,7 +119,7 @@ import SwiftUI
         var updated = layout
         let suggestedName: String?
         if placement == .center, folderID == nil, case .app(let first) = target {
-            suggestedName = indexed[first]?.suggestedFolderName
+            suggestedName = indexed[first]?.suggestedFolderName(in: language) ?? language.text("New Folder")
         } else { suggestedName = nil }
         let created = updated.drop(source, onto: target, placement: placement, in: folderID,
                                    newFolderName: suggestedName)

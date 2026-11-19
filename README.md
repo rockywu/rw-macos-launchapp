@@ -1,52 +1,56 @@
 # RWLaunch
 
-用四指或五指往中间捏，打开像旧版 macOS Launchpad 一样的全屏应用网格。独立运行，无需账号、激活或联网。
+[简体中文](docs/README.zh-CN.md) · [Downloads](https://github.com/rockywu/rw-macos-launchapp/releases)
 
-[GitHub 仓库](https://github.com/rockywu/rw-macos-launchapp) · [发布页](https://github.com/rockywu/rw-macos-launchapp/releases)
+A full-screen app launcher for macOS. Pinch with four or five fingers to open it. Requires macOS 15 or later; works on Apple silicon and Intel Macs.
 
-## 安装和操作
+![Launcher guide: search at the top, open Options with the ellipsis, or swipe to switch pages](docs/images/launcher-en.svg)
 
-1. 退出旧版 RWLaunch，解压并打开新版。启动台右上区域的「…」与菜单栏九宫格图标提供相同的设置入口。取消勾选「显示菜单栏图标」即可隐藏九宫格，重启后仍会保留此设置。要恢复图标，用捏合手势或在访达中打开 RWLaunch，再从启动台的「…」重新勾选。
-2. **手势接管**：缺少权限时，启动台顶部会提示「系统捏合尚未接管」，菜单也会显示「系统捏合：未授权」。点击「打开系统设置」，在「隐私与安全 → 设备控制和数据访问」（macOS 26 及更早版本称「辅助功能」）里为当前这份 RWLaunch 授权一次。授权后，提示会自动消失。如果系统列表里只有旧版，可手动添加新版。完全退出 RWLaunch，或关掉菜单里的「四指或五指捏合」，都会停止接管；只是按 Esc 收起界面，RWLaunch 仍在后台运行。工具不会更改系统触控板偏好。
-3. **左右翻页**：两指横滑时网格随手势移动，短距离横滑或快速轻划后松手即可翻页；轻微抖动和纵向滑动不会翻页。也可点底部圆点、按左右方向键或用鼠标滚轮。打开启动台时，图标从屏幕中心放大并淡入；按 Esc 或单击空白处收起时，图标缩回并淡出。系统开启「减少动态效果」时跳过动画。
-4. **排序和合并**：把图标拖到另一个图标的左边或右边，网格会先移动图标让出一格，松手后保存排序。拖到另一个 App 或文件夹的中间，文件夹的圆角外框会略微放大；松手后图标缩小滑入文件夹，外框恢复原大小。拖到屏幕左右边缘稍停可以跨页。也可以通过图标右键菜单操作。
-5. **打开、排序和移出文件夹**：文件夹以半透明方框打开。4 个应用以内用 2 行 2 列，5 至 9 个用 3 行 3 列，10 个及以上用 4 行 4 列，每页最多 16 个应用。超过一页时，可横滑或点下方圆点翻页。拖动文件夹内的图标时，其他图标会让位；在方框左右边缘内稍停可跨页。拖出方框后可放入主网格，放到网格外则取消。文件夹只剩一个应用时会自动解散，剩余应用留在原位置。长按名称可改名，点空白处或按回车保存。未编辑时，点击方框外或按 Esc 可关闭文件夹。
-6. **图标反馈**：鼠标停在图标上时轻微放大并提亮，点击时短暂放大后打开。开启「减少动态效果」时，只用亮度提示。
+## Get started
 
-新建文件夹会以第一个应用的类别命名；没有可识别的类别时用应用名。把应用加入已有文件夹不会改名。
+1. Download `RWLaunch-trial.zip` from [Releases](https://github.com/rockywu/rw-macos-launchapp/releases). Unzip it, move `RWLaunch.app` to **Applications**, and open it. Quit any older copy first.
+2. Pinch with four or five fingers, or click the grid icon in the menu bar and choose **Open Launcher**.
+3. Type to search, or click an app to open it. Press **Esc** to close the grid.
 
-手势接管只处理识别到的系统向内捏合。需要实机验证系统「Apps」是否被拦住、向外张开是否仍按系统设置工作，以及退出 RWLaunch 后系统捏合是否恢复。若授权后仍同时出现两个界面，可到「系统设置 → 触控板 → 更多手势」手动关闭「App／Apps」作为暂时办法；手动改动须由你手动改回。菜单栏入口不依赖触控板接口。
+## What you can do
 
-## 下载后提示「已损坏」或无法打开
+- **Browse:** Swipe sideways with two fingers, use the arrow keys, or click the page dots.
+- **Organize:** Drag beside an icon to reorder. Drop onto an app or folder to group items. Press and hold a folder name to rename it.
+- **Customize:** Hide the menu bar icon, open at login, or choose English or Simplified Chinese.
 
-试用包有临时签名，但没有 Apple Developer ID 签名或公证。先从项目的发布页下载并解压试用包。若 macOS 仅提示「无法验证开发者」，优先按 [Apple 的说明](https://support.apple.com/zh-cn/102445)，在「系统设置 → 隐私与安全性」对 RWLaunch 选择「仍要打开」。
+## Options menu
 
-若可信来源的试用包提示「已损坏」，而系统没有提供「仍要打开」：
+Open the menu from the menu bar grid icon or the **…** beside the search field.
 
-1. 单独下载同一次发布的 `RWLaunch-repair.zip` 并解压。应用本身在 `RWLaunch-trial.zip` 中。
-2. 双击 `Repair RWLaunch.command`，在文件选择器中选中已解压的 `RWLaunch.app`。工具先核对该版应用的签名指纹和文件完整性，再仅移除这个 App 的下载隔离标记。工具不需要管理员权限，也不更改 Gatekeeper 设置。
-3. 看到成功提示后，回到访达双击 RWLaunch。若校验失败，请重新下载对应的试用包和工具；若系统报告含有恶意软件，不要使用修复工具。
+![Options menu in English, with the Language submenu expanded](docs/images/options-en.svg)
 
-如果 macOS 拦截从项目下载的 `.command`，可在「终端」输入 `/bin/bash `（末尾有空格），把解压出的 `.command` 拖进去后按回车。然后在文件选择器里选择应用。
+| Option | What it does |
+| --- | --- |
+| **Open Launcher** | Opens the app grid. |
+| **4- or 5-Finger Pinch** | Enables the pinch shortcut. |
+| **Open at Login** | Starts RWLaunch when you sign in. |
+| **Reconnect Trackpad** | Reconnects a trackpad if the gesture stops responding. |
+| **System Pinch…** | Shows whether RWLaunch can intercept the system pinch. Click to open the relevant permission setting. |
+| **Show Menu Bar Icon** | Shows or hides the grid icon. |
+| **Language** | Switches immediately. **System** uses Simplified Chinese for Chinese system languages and English for everything else. |
+| **Quit** | Stops RWLaunch and its gesture handling. |
 
-`spctl --assess` 可查看系统评估结果。它不会把试用包变成已公证应用。面向公众分发时，建议使用 Apple Developer ID 签名和公证。
+## FAQ
 
-## 卸载与移除权限
+**macOS says the app is damaged. What should I do?**
 
-退出 RWLaunch 后可把应用拖到废纸篓。macOS 单独保存设备控制和数据访问的授权决定，删除应用不会自动清除这条记录。要一起清理，可在「系统设置 → 隐私与安全 → 设备控制和数据访问」（旧版 macOS 为「辅助功能」）选中 RWLaunch 那一行，点击左下角「−」。也可以先移除授权，再删除应用。
+The trial app is ad hoc signed and is not notarized. If macOS says it can’t verify the developer, [try Open Anyway first](https://support.apple.com/en-us/102445). If it says the app is damaged and that option isn’t available, use the repair tool only on the matching copy from this project. If macOS reports malware, don’t proceed.
 
-## 构建
+![Repair flow: download the matching ZIP, choose RWLaunch.app, then reopen it in Finder](docs/images/repair-en.svg)
 
-用 Xcode 或带 Swift 和 macOS SDK 的命令行工具，构建 Apple 芯片与 Intel 通用包（最低目标 macOS 15）：
+1. Download and unzip `RWLaunch-repair.zip` from the **same release**.
+2. Open `Repair RWLaunch.command` and choose the unzipped `RWLaunch.app`. The tool verifies the app before removing its download quarantine flag. It doesn’t change Gatekeeper settings.
+3. On success, reopen the app in Finder. If verification fails, download both ZIPs again. If macOS blocks the script itself, type `/bin/bash` and a space in Terminal, drag the script into the window, then press Return.
 
-```sh
-./build.sh "$PWD/build/RWLaunch.app"
-./package.sh "$PWD/build/RWLaunch.app" "$PWD/build/release"
-CI=true ./test.sh
-```
+**Why does the macOS Apps view still open when I pinch?**
 
-`package.sh` 生成可分别下载的试用包和修复工具 ZIP。两者由同一次构建配对，请一同提供。
+Select **System Pinch…** and allow RWLaunch under **Privacy & Security → Device Control & Data Access** (**Accessibility** on macOS 26 and earlier). If both launchers still open, you can turn off the system **Apps** gesture in Trackpad settings.
 
-通过 SSH 克隆：`git clone git@github.com:rockywu/rw-macos-launchapp.git`。
+**How do I get the menu bar icon back?**
 
-应用通过系统接口发现和启动，布局存储在本机。触控坐标在内存中处理，不存储轨迹或上传。默认触控设备的结构定义来自 [OpenMultitouchSupport](https://github.com/Kyome22/OpenMultitouchSupport)，其 MIT 许可证随应用分发。
+Pinch or reopen RWLaunch from Finder. Open **…** and turn **Show Menu Bar Icon** back on.

@@ -41,6 +41,7 @@ struct LauncherView: View {
     let topInset: CGFloat
     let openPermissionSettings: () -> Void
     let menu: () -> Void
+    private var language: AppLanguage { model.language }
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @FocusState private var focus: Field?
     @State private var nameDraft = ""
@@ -277,7 +278,7 @@ struct LauncherView: View {
                 permissionHint(width: m.permissionWidth).offset(y: m.top + 50)
             }
             if items.isEmpty {
-                Text("没有找到应用").foregroundStyle(.white.opacity(0.8)).offset(y: m.gridTop + m.cellH)
+                Text(language.text("No apps found")).foregroundStyle(.white.opacity(0.8)).offset(y: m.gridTop + m.cellH)
             } else {
                 pages(m, items: items, page: model.rootPage, capacity: LaunchModel.rootCapacity,
                       interactive: interactive).offset(y: m.gridTop)
@@ -316,7 +317,7 @@ struct LauncherView: View {
                         Circle().fill(.white.opacity(n == page ? 1 : 0.37))
                             .frame(width: 7, height: 7).frame(width: 18, height: 24)
                             .contentShape(Rectangle())
-                    }.buttonStyle(.plain).accessibilityLabel("第 \(n + 1) 页")
+                    }.buttonStyle(.plain).accessibilityLabel(String(format: language.text("Page %lld"), n + 1))
                         .accessibilityAddTraits(n == page ? .isSelected : [])
                 }
             }
@@ -330,13 +331,14 @@ struct LauncherView: View {
                 .foregroundStyle(Color(red: 1, green: 0.8, blue: 0.45))
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 3) {
-                Text("系统捏合尚未接管").font(.system(size: 13, weight: .semibold))
-                Text("请开启「\(gesturePermissionName)」，否则系统「Apps」仍可能弹出。")
+                Text(language.text("System Pinch Is Not Active")).font(.system(size: 13, weight: .semibold))
+                Text(String(format: language.text("Allow RWLaunch under %@ to prevent the system Apps view from opening."),
+                            gesturePermissionName(in: language)))
                     .font(.system(size: 12)).foregroundStyle(.white.opacity(0.86))
                     .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 4)
-            Button("打开系统设置", action: openPermissionSettings)
+            Button(language.text("Open Settings"), action: openPermissionSettings)
                 .buttonStyle(.bordered)
                 .fixedSize()
         }
@@ -417,11 +419,11 @@ struct LauncherView: View {
             let badge = RoundedRectangle(cornerRadius: 8, style: .continuous)
             Group {
                 if model.editingName {
-                    TextField("文件夹名称", text: $nameDraft)
+                    TextField(language.text("Folder Name"), text: $nameDraft)
                         .textFieldStyle(.plain)
                         .multilineTextAlignment(.center)
                         .focused($focus, equals: .folderName)
-                        .accessibilityLabel("文件夹名称")
+                        .accessibilityLabel(language.text("Folder Name"))
                         .onSubmit { model.rename(nameDraft) }
                 } else {
                     Text(model.folderName).lineLimit(1)
@@ -431,9 +433,9 @@ struct LauncherView: View {
                         .onLongPressGesture(minimumDuration: 0.45, maximumDistance: 7) {
                             if dragged == nil { model.editingName = true }
                         }
-                        .help("长按文件夹名称以重命名")
-                        .accessibilityAction(named: Text("重命名文件夹")) { model.editingName = true }
-                        .accessibilityAction(named: Text("关闭文件夹")) { model.clearFolder() }
+                        .help(language.text("Press and hold the folder name to rename it"))
+                        .accessibilityAction(named: Text(language.text("Rename Folder"))) { model.editingName = true }
+                        .accessibilityAction(named: Text(language.text("Close Folder"))) { model.clearFolder() }
                 }
             }.font(.system(size: m.titleFontSize, weight: .semibold))
                 .padding(.horizontal, model.editingName ? Metrics.folderTitlePadding : 0)
@@ -443,13 +445,13 @@ struct LauncherView: View {
         } else {
             HStack(spacing: 9) {
                 Image(systemName: "magnifyingglass").font(.system(size: 16, weight: .medium)).accessibilityHidden(true)
-                TextField("", text: $model.query, prompt: Text("搜索应用").foregroundStyle(.white.opacity(0.64)))
+                TextField("", text: $model.query, prompt: Text(language.text("Search Apps")).foregroundStyle(.white.opacity(0.64)))
                     .textFieldStyle(.plain).font(.system(size: 15, weight: .medium))
-                    .accessibilityLabel("搜索应用").focused($focus, equals: .search)
+                    .accessibilityLabel(language.text("Search Apps")).focused($focus, equals: .search)
                     .onSubmit { if model.searching, let first = model.visibleItems.first { activate(first) } }
                 Button(action: menu) {
                     Image(systemName: "ellipsis.circle").font(.system(size: 18)).foregroundStyle(.white.opacity(0.72))
-                }.buttonStyle(.plain).accessibilityLabel("设置与退出")
+                }.buttonStyle(.plain).accessibilityLabel(language.text("Options"))
             }.padding(.horizontal, 15).frame(width: m.searchWidth, height: 40)
                 .background(.white.opacity(0.10), in: Capsule())
                 .overlay(Capsule().strokeBorder(.white.opacity(0.18)))
@@ -526,14 +528,14 @@ struct LauncherView: View {
             .help(item.name)
             .contextMenu {
                 if !model.searching {
-                    Button("向前移动") { model.shift(item.entry, by: -1) }
-                    Button("向后移动") { model.shift(item.entry, by: 1) }
+                    Button(language.text("Move Earlier")) { model.shift(item.entry, by: -1) }
+                    Button(language.text("Move Later")) { model.shift(item.entry, by: 1) }
                     if case .folder(let id, _, _) = item {
-                        Button("重命名文件夹") { model.edit(id) }
+                        Button(language.text("Rename Folder")) { model.edit(id) }
                     } else if model.folderID != nil {
-                        Button("移出文件夹") { model.removeFromFolder(item.entry) }
+                        Button(language.text("Remove from Folder")) { model.removeFromFolder(item.entry) }
                     } else if case .app = item {
-                        Menu("合并到文件夹") {
+                        Menu(language.text("Merge into Folder")) {
                             ForEach(model.currentItems.filter { $0.entry != item.entry }) { target in
                                 Button(target.name) { model.place(item.entry, onto: target.entry, placement: .center) }
                             }

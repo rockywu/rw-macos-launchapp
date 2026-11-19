@@ -4,9 +4,9 @@ import ServiceManagement
 
 let toolName = "RWLaunch"
 
-var gesturePermissionName: String {
-    if #available(macOS 27.0, *) { return "设备控制和数据访问" }
-    return "辅助功能"
+func gesturePermissionName(in language: AppLanguage) -> String {
+    if #available(macOS 27.0, *) { return language.text("Device Control & Data Access") }
+    return language.text("Accessibility")
 }
 
 struct InstalledApp: Identifiable {
@@ -17,25 +17,25 @@ struct InstalledApp: Identifiable {
     var categoryIdentifier: String? = nil
     var id: String { url.path }
 
-    var suggestedFolderName: String {
+    func suggestedFolderName(in language: AppLanguage) -> String {
         let prefix = "public.app-category."
         guard let identifier = categoryIdentifier?.lowercased(), identifier.hasPrefix(prefix) else { return name }
         let category = identifier.dropFirst(prefix.count)
-        if category == "games" || category.hasSuffix("-games") { return "游戏" }
+        if category == "games" || category.hasSuffix("-games") { return language.text("Games") }
         switch category {
-        case "music": return "音乐"
-        case "photography": return "摄影"
-        case "video": return "视频"
-        case "graphics-design": return "设计"
-        case "developer-tools": return "开发工具"
-        case "utilities": return "实用工具"
-        case "productivity", "business": return "办公"
-        case "social-networking": return "社交"
-        case "education": return "教育"
-        case "news": return "新闻"
-        case "finance": return "财务"
-        case "reference": return "参考资料"
-        case "entertainment": return "娱乐"
+        case "music": return language.text("Music")
+        case "photography": return language.text("Photography")
+        case "video": return language.text("Video")
+        case "graphics-design": return language.text("Design")
+        case "developer-tools": return language.text("Developer Tools")
+        case "utilities": return language.text("Utilities")
+        case "productivity", "business": return language.text("Productivity")
+        case "social-networking": return language.text("Social")
+        case "education": return language.text("Education")
+        case "news": return language.text("News")
+        case "finance": return language.text("Finance")
+        case "reference": return language.text("Reference")
+        case "entertainment": return language.text("Entertainment")
         default: return name
         }
     }
@@ -73,7 +73,7 @@ enum GridItemValue: Identifiable {
         icons[app.id] = img
         return img
     }
-    func load() -> (apps: [InstalledApp], items: [GridItemValue]) {
+    func load(language: AppLanguage) -> (apps: [InstalledApp], items: [GridItemValue]) {
         let fm = FileManager.default
         let roots = ["/System/Applications", "/Applications",
                      fm.homeDirectoryForCurrentUser.appendingPathComponent("Applications").path]
@@ -122,9 +122,9 @@ enum GridItemValue: Identifiable {
         utilities.sort(by: byName)
         games.sort(by: byName)
         var items = main.map(GridItemValue.app)
-        if !utilities.isEmpty { items.append(.folder("utilities", "实用工具", utilities)) }
-        if !systemOther.isEmpty { items.append(.folder("system-other", "其他", systemOther)) }
-        if !games.isEmpty { items.append(.folder("games", "游戏", games)) }
+        if !utilities.isEmpty { items.append(.folder("utilities", language.text("Utilities"), utilities)) }
+        if !systemOther.isEmpty { items.append(.folder("system-other", language.text("Other"), systemOther)) }
+        if !games.isEmpty { items.append(.folder("games", language.text("Games"), games)) }
         items.append(contentsOf: thirdParty.map(GridItemValue.app))
         let apps = (main + utilities + systemOther + games + thirdParty).sorted(by: byName)
         icons = icons.filter { knownIcon in apps.contains { $0.id == knownIcon.key } }
@@ -183,21 +183,50 @@ final class LauncherWindow: NSWindow {
     private var lastPageAt: TimeInterval = 0
     private var pageSwipe = PageSwipe()
     private var optionsShown = false
+    private lazy var optionsItems: [(NSMenuItem, String)] = [
+        (option(#selector(show)), "Open Launcher"),
+        (.separator(), ""),
+        (option(#selector(toggleGesture)), "4- or 5-Finger Pinch"),
+        (option(#selector(toggleLogin)), "Open at Login"),
+        (option(#selector(reconnect)), "Reconnect Trackpad"),
+        (option(#selector(openAccessibility)), "System Pinch Settings…"),
+        (option(#selector(toggleMenuBarIcon)), "Show Menu Bar Icon"),
+        (NSMenuItem(), "Language"),
+        (.separator(), ""),
+        (option(#selector(quit), key: "q"), "Quit")
+    ]
+    private lazy var languageMenu: NSMenu = {
+        let submenu = NSMenu()
+        for selection in LanguagePreference.allCases {
+            let item = option(#selector(selectLanguage(_:)))
+            item.representedObject = selection.rawValue
+            submenu.addItem(item)
+        }
+        return submenu
+    }()
     private lazy var menu: NSMenu = {
         let m = NSMenu()
         m.delegate = self
-        m.addItem(withTitle: "打开启动台", action: #selector(show), keyEquivalent: "")
-        m.addItem(.separator())
-        m.addItem(withTitle: "四指或五指捏合", action: #selector(toggleGesture), keyEquivalent: "")
-        m.addItem(withTitle: "开机时启动", action: #selector(toggleLogin), keyEquivalent: "")
-        m.addItem(withTitle: "重新连接触控板", action: #selector(reconnect), keyEquivalent: "")
-        m.addItem(withTitle: "系统捏合接管设置…", action: #selector(openAccessibility), keyEquivalent: "")
-        m.addItem(withTitle: "显示菜单栏图标", action: #selector(toggleMenuBarIcon), keyEquivalent: "")
-        m.addItem(.separator())
-        m.addItem(withTitle: "退出 \(toolName)", action: #selector(quit), keyEquivalent: "q")
-        m.items.forEach { $0.target = self }
+        for (item, key) in optionsItems {
+            if key == "Language" { item.submenu = languageMenu }
+            m.addItem(item)
+        }
         return m
     }()
+
+    private func option(_ action: Selector, key: String = "") -> NSMenuItem {
+        let item = NSMenuItem(title: "", action: action, keyEquivalent: key)
+        item.target = self
+        return item
+    }
+
+    @objc private func selectLanguage(_ sender: NSMenuItem) {
+        guard let value = sender.representedObject as? String,
+              let selection = LanguagePreference(rawValue: value) else { return }
+        model.setLanguage(selection)
+        menuNeedsUpdate(menu)
+    }
+
     private var gestureEnabled: Bool { !UserDefaults.standard.bool(forKey: "gestureDisabled") }
     private let menuBarIconHiddenKey = "menuBarIconHidden"
     private var menuBarIconVisible: Bool { !UserDefaults.standard.bool(forKey: menuBarIconHiddenKey) }
@@ -209,7 +238,7 @@ final class LauncherWindow: NSWindow {
         bar.button?.toolTip = toolName
         bar.menu = menu
         bar.isVisible = menuBarIconVisible
-        menu.items[2].state = gestureEnabled ? .on : .off
+        menuNeedsUpdate(menu)
         let nc = NSWorkspace.shared.notificationCenter
         nc.addObserver(self, selector: #selector(sleep), name: NSWorkspace.willSleepNotification, object: nil)
         nc.addObserver(self, selector: #selector(reconnect), name: NSWorkspace.didWakeNotification, object: nil)
@@ -239,7 +268,8 @@ final class LauncherWindow: NSWindow {
             else { try service.register() }
         } catch {
             let alert = NSAlert()
-            alert.messageText = "无法更改开机启动"
+            alert.messageText = model.language.text("Couldn’t Change Login Setting")
+            alert.addButton(withTitle: model.language.text("OK"))
             alert.informativeText = error.localizedDescription
             alert.runModal()
         }
@@ -292,7 +322,7 @@ final class LauncherWindow: NSWindow {
         let mouse = NSEvent.mouseLocation
         guard let screen = NSScreen.screens.first(where: { $0.frame.contains(mouse) }) ?? NSScreen.main else { return }
         if let front = NSWorkspace.shared.frontmostApplication, front != NSRunningApplication.current { previousApp = front }
-        let catalog = Catalog.shared.load()
+        let catalog = Catalog.shared.load(language: model.language)
         model.load(catalog.apps, defaultItems: catalog.items)
         pageSwipe = PageSwipe()
         model.isExpanded = NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
@@ -354,11 +384,13 @@ final class LauncherWindow: NSWindow {
     }
 
     private func launch(_ url: URL) {
-        NSWorkspace.shared.openApplication(at: url, configuration: .init()) { _, error in
+        NSWorkspace.shared.openApplication(at: url, configuration: .init()) { [weak self] _, error in
             guard let error else { return }
             DispatchQueue.main.async {
                 let alert = NSAlert()
-                alert.messageText = "无法打开应用"
+                let language = self?.model.language ?? .system()
+                alert.messageText = language.text("Couldn’t Open App")
+                alert.addButton(withTitle: language.text("OK"))
                 alert.informativeText = error.localizedDescription
                 alert.runModal()
             }
@@ -415,20 +447,33 @@ final class LauncherWindow: NSWindow {
 
 extension Launcher: NSMenuDelegate, NSWindowDelegate {
     func menuNeedsUpdate(_ m: NSMenu) {
-        m.items[2].state = gestureEnabled ? .on : .off
-        m.items[2].title = gestureEnabled && !gestureOK ? "四指或五指捏合（未连接）" : "四指或五指捏合"
-        if model.needsGesturePermission {
-            m.items[5].title = "系统捏合：未授权…"
-        } else if SystemPinchSuppressionCount() > 0 && systemGestureOK {
-            m.items[5].title = "系统捏合：接管中"
-        } else if systemGestureOK {
-            m.items[5].title = "系统捏合：等待手势"
-        } else {
-            m.items[5].title = "系统捏合接管设置…"
+        let language = model.language
+        for (item, key) in optionsItems where !item.isSeparatorItem {
+            item.title = language.text(key)
+            switch item.action {
+            case #selector(toggleGesture):
+                item.state = gestureEnabled ? .on : .off
+                if gestureEnabled && !gestureOK { item.title = language.text("Pinch (Disconnected)") }
+            case #selector(openAccessibility):
+                if model.needsGesturePermission {
+                    item.title = language.text("System Pinch: Not Allowed…")
+                } else if systemGestureOK {
+                    item.title = language.text(SystemPinchSuppressionCount() > 0 ? "System Pinch: Active" : "System Pinch: Waiting")
+                }
+            case #selector(toggleLogin):
+                let status = SMAppService.mainApp.status
+                item.state = status == .enabled || status == .requiresApproval ? .on : .off
+            case #selector(toggleMenuBarIcon):
+                item.state = menuBarIconVisible ? .on : .off
+            default: break
+            }
         }
-        let service = SMAppService.mainApp
-        m.items[3].state = service.status == .enabled || service.status == .requiresApproval ? .on : .off
-        m.items.first { $0.action == #selector(toggleMenuBarIcon) }?.state = menuBarIconVisible ? .on : .off
+        for item in languageMenu.items {
+            guard let value = item.representedObject as? String,
+                  let selection = LanguagePreference(rawValue: value) else { continue }
+            item.title = selection.label(in: language)
+            item.state = selection == model.languagePreference ? .on : .off
+        }
     }
     func windowDidResignKey(_ notification: Notification) {
         if !optionsShown && !NSApp.isActive && window?.isVisible == true { hide(restore: false, animated: false) }

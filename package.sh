@@ -7,7 +7,7 @@ output=${2-}
 app=${app%/}
 output=${output%/}
 if [[ $# != 2 || "$app" != /*/RWLaunch.app || ! -d "$app" || -L "$app" || "$output" != /* ]]; then
-    printf '用法：./package.sh /绝对路径/RWLaunch.app /绝对路径/新输出目录\n' >&2
+    printf 'Usage: ./package.sh /absolute/path/RWLaunch.app /absolute/path/new-output-dir\n' >&2
     exit 1
 fi
 
@@ -20,7 +20,7 @@ cdhash() {
     if [[ "$digest" =~ ^[a-f0-9]{40}$ ]] && /usr/bin/grep -qx 'Signature=adhoc' <<< "$info"; then
         printf '%s\n' "$digest"
     else
-        printf '该工具只打包带临时签名的通用试用版（%s）。\n' "$arch" >&2
+        printf 'Expected an ad hoc-signed universal trial build (%s).\n' "$arch" >&2
         return 1
     fi
 }

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 342" width="800" height="342" role="img" aria-labelledby="title">
+<title id="title">Find and open apps</title>
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101d31"/><stop offset="1" stop-color="#143643"/></linearGradient></defs>
+<rect width="800" height="342" rx="18" fill="url(#bg)"/>
+<g font-family="-apple-system, BlinkMacSystemFont, system-ui, PingFang SC, sans-serif">
+<text x="29" y="37" font-size="23" fill="#f1f7ff" font-weight="650">Find and open apps</text>
+<text x="29" y="61" font-size="15" fill="#b5c7df" >Pinch inward with four or five fingers. Press Esc to close.</text>
+<rect x="29" y="82" width="742" height="239" rx="15" fill="#15283e" stroke="#45607c"/>
+<rect x="243" y="100" width="314" height="39" rx="20" fill="#243d56" stroke="none"/>
+<circle cx="264" cy="117" r="6" fill="#243d56"/>
+<path d="M 268 121 l 4 4" fill="none" stroke="#b5c7df" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="263" cy="116" r="5" fill="none" stroke="#b5c7df" stroke-width="1.5"/>
+<text x="282" y="125" font-size="16" fill="#b5c7df" >Search Apps</text>
+<circle cx="538" cy="119" r="11" fill="none" stroke="#76e4d2" stroke-width="1.6"/>
+<circle cx="533" cy="119" r="1.5" fill="#76e4d2"/>
+<circle cx="538" cy="119" r="1.5" fill="#76e4d2"/>
+<circle cx="543" cy="119" r="1.5" fill="#76e4d2"/>
+<path d="M 557 119 H 580" fill="none" stroke="#76e4d2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="590" y="125" font-size="15" fill="#76e4d2" >Options</text>
+<rect x="79" y="156" width="48" height="48" rx="12" fill="#286cbd" stroke="none"/>
+<g transform="translate(79 156)"><path d="M 11 32 l 12 -20 l 12 20 M 16 25 h 14" fill="none" stroke="#f1f7ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<rect x="86" y="209" width="34" height="3" rx="1.5" fill="#60778d" stroke="none"/>
+<rect x="177" y="156" width="48" height="48" rx="12" fill="#3a4679" stroke="none"/>
+<g transform="translate(177 156)"><path d="M 10 16 h 27 v 16 h -27 z M 10 17 l 13 9 l 14 -9" fill="none" stroke="#f1f7ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<rect x="184" y="209" width="34" height="3" rx="1.5" fill="#60778d" stroke="none"/>
+<rect x="275" y="156" width="48" height="48" rx="12" fill="#256b5b" stroke="none"/>
+<g transform="translate(275 156)"><path d="M 10 20 h 11 l 4 4 h 11 v 11 h -26 z" fill="none" stroke="#f1f7ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<rect x="282" y="209" width="34" height="3" rx="1.5" fill="#60778d" stroke="none"/>
+<rect x="373" y="156" width="48" height="48" rx="12" fill="#955279" stroke="none"/>
+<g transform="translate(373 156)"><path d="M 24 12 v 18 M 24 15 l 10 -2 M 24 29 c -8 -4 -13 9 -4 8 l 4 -3" fill="none" stroke="#f1f7ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<rect x="380" y="209" width="34" height="3" rx="1.5" fill="#60778d" stroke="none"/>
+<rect x="471" y="156" width="48" height="48" rx="12" fill="#a06434" stroke="none"/>
+<g transform="translate(471 156)"><path d="M 14 14 h 20 v 23 h -20 z M 19 21 h 10 M 19 27 h 10 M 19 33 h 6" fill="none" stroke="#f1f7ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<rect x="478" y="209" width="34" height="3" rx="1.5" fill="#60778d" stroke="none"/>
+<rect x="569" y="156" width="48" height="48" rx="12" fill="#34758d" stroke="none"/>
+<g transform="translate(569 156)"><path d="M 13 20 v 13 h 23 v -13 z M 19 20 l 2 -4 h 7 l 2 4 M 26 25 a 3 3 0 1 0 0 6 a 3 3 0 1 0 0 -6" fill="none" stroke="#f1f7ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<rect x="576" y="209" width="34" height="3" rx="1.5" fill="#60778d" stroke="none"/>
+<rect x="667" y="156" width="48" height="48" rx="12" fill="#715da0" stroke="none"/>
+<g transform="translate(667 156)"><path d="M 15 20 h 17 v 14 h -17 z M 18 14 v 8 M 29 14 v 8" fill="none" stroke="#f1f7ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<rect x="674" y="209" width="34" height="3" rx="1.5" fill="#60778d" stroke="none"/>
+<rect x="79" y="224" width="48" height="48" rx="12" fill="#955279" stroke="none"/>
+<g transform="translate(79 224)"><path d="M 24 12 v 18 M 24 15 l 10 -2 M 24 29 c -8 -4 -13 9 -4 8 l 4 -3" fill="none" stroke="#f1f7ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<rect x="86" y="277" width="34" height="3" rx="1.5" fill="#60778d" stroke="none"/>
+<rect x="177" y="224" width="48" height="48" rx="12" fill="#a06434" stroke="none"/>
+<g transform="translate(177 224)"><path d="M 14 14 h 20 v 23 h -20 z M 19 21 h 10 M 19 27 h 10 M 19 33 h 6" fill="none" stroke="#f1f7ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<rect x="184" y="277" width="34" height="3" rx="1.5" fill="#60778d" stroke="none"/>
+<rect x="275" y="224" width="48" height="48" rx="12" fill="#34758d" stroke="none"/>
+<g transform="translate(275 224)"><path d="M 13 20 v 13 h 23 v -13 z M 19 20 l 2 -4 h 7 l 2 4 M 26 25 a 3 3 0 1 0 0 6 a 3 3 0 1 0 0 -6" fill="none" stroke="#f1f7ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<rect x="282" y="277" width="34" height="3" rx="1.5" fill="#60778d" stroke="none"/>
+<rect x="373" y="224" width="48" height="48" rx="12" fill="#715da0" stroke="none"/>
+<g transform="translate(373 224)"><path d="M 15 20 h 17 v 14 h -17 z M 18 14 v 8 M 29 14 v 8" fill="none" stroke="#f1f7ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<rect x="380" y="277" width="34" height="3" rx="1.5" fill="#60778d" stroke="none"/>
+<rect x="471" y="224" width="48" height="48" rx="12" fill="#487a45" stroke="none"/>
+<g transform="translate(471 224)"><path d="M 12 32 l 8 -11 l 5 6 l 4 -4 l 7 9 z M 29 15 h 1" fill="none" stroke="#f1f7ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<rect x="478" y="277" width="34" height="3" rx="1.5" fill="#60778d" stroke="none"/>
+<rect x="569" y="224" width="48" height="48" rx="12" fill="#286cbd" stroke="none"/>
+<g transform="translate(569 224)"><path d="M 11 32 l 12 -20 l 12 20 M 16 25 h 14" fill="none" stroke="#f1f7ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<rect x="576" y="277" width="34" height="3" rx="1.5" fill="#60778d" stroke="none"/>
+<rect x="667" y="224" width="48" height="48" rx="12" fill="#3a4679" stroke="none"/>
+<g transform="translate(667 224)"><path d="M 10 16 h 27 v 16 h -27 z M 10 17 l 13 9 l 14 -9" fill="none" stroke="#f1f7ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></g>
+<rect x="674" y="277" width="34" height="3" rx="1.5" fill="#60778d" stroke="none"/>
+<circle cx="390" cy="302" r="3.5" fill="#76e4d2"/>
+<circle cx="403" cy="302" r="3" fill="#667e94"/>
+<circle cx="416" cy="302" r="3" fill="#667e94"/>
+<path d="M 431 302 H 461" fill="none" stroke="#76e4d2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="470" y="307" font-size="15" fill="#76e4d2" >Swipe to switch pages</text>
+</g>
+</svg>

@@ -1,50 +1,67 @@
 #!/bin/bash
 set -euo pipefail
 
+system_language=$(/usr/bin/defaults export NSGlobalDomain - 2>/dev/null \
+    | /usr/bin/plutil -extract AppleLanguages.0 raw -o - - 2>/dev/null) || system_language=''
+message() {
+    if [[ "$system_language" =~ ^zh([-_]|$) ]]; then printf '%s' "$2"
+    else printf '%s' "$1"
+    fi
+}
+
 fail() {
-    printf '修复失败：%s\n' "$1" >&2
+    printf '%s %s\n' "$(message 'Repair failed:' '修复失败：')" "$(message "$1" "$2")" >&2
     exit 1
 }
 
 case $# in
     0)
-        app=$(/usr/bin/osascript <<'APPLESCRIPT'
-try
-    set selectedApp to choose file of type {"com.apple.application-bundle"} with prompt "请选择从 RWLaunch 项目下载并解压的 RWLaunch.app。核对成功后，仅移除该应用的下载隔离标记。"
-    return POSIX path of selectedApp
-on error number -128
-    return ""
-end try
+        prompt=$(message 'Choose the RWLaunch.app you downloaded and unzipped. Only this app’s download quarantine flag will be removed after verification.' \
+            '请选择从 RWLaunch 项目下载并解压的 RWLaunch.app。核对成功后，仅移除该应用的下载隔离标记。')
+        app=$(/usr/bin/osascript - "$prompt" <<'APPLESCRIPT'
+on run argv
+    try
+        set selectedApp to choose file of type {"com.apple.application-bundle"} with prompt (item 1 of argv)
+        return POSIX path of selectedApp
+    on error number -128
+        return ""
+    end try
+end run
 APPLESCRIPT
-        ) || fail '无法打开文件选择器。可在终端运行脚本，并传入 RWLaunch.app 的完整路径。'
+        ) || fail 'Could not open the file picker. Run the script in Terminal with the full path to RWLaunch.app.' \
+            '无法打开文件选择器。可在终端运行脚本，并传入 RWLaunch.app 的完整路径。'
         [ -n "$app" ] || exit 0
         ;;
     1) app=$1 ;;
-    *) fail '请只指定一个 RWLaunch.app 路径。' ;;
+    *) fail 'Specify only one path to RWLaunch.app.' '请只指定一个 RWLaunch.app 路径。' ;;
 esac
 
 app=${app%/}
 [[ "$app" = /*/RWLaunch.app && -d "$app" && ! -L "$app" ]] \
-    || fail '请选择解压后的 RWLaunch.app。'
+    || fail 'Choose the unzipped RWLaunch.app.' '请选择解压后的 RWLaunch.app。'
 
 /usr/bin/codesign --verify --strict --deep --all-architectures \
     -R='identifier "local.pinchlaunch.launcher"' "$app" \
-    || fail '应用文件校验未通过。请从项目重新下载试用包。'
+    || fail 'App verification failed. Download the trial ZIP again from this project.' \
+        '应用文件校验未通过。请从项目重新下载试用包。'
 
 for entry in 'arm64:@ARM64_CDHASH@' 'x86_64:@X86_64_CDHASH@'; do
     arch=${entry%%:*}
     expected=${entry#*:}
     actual=$(/usr/bin/codesign --display --arch "$arch" --verbose=4 "$app" 2>&1 \
-        | /usr/bin/sed -n 's/^CDHash=//p') || fail '无法读取应用的签名指纹。'
+        | /usr/bin/sed -n 's/^CDHash=//p') || fail 'Could not read the app signature.' '无法读取应用的签名指纹。'
     [[ "$actual" = "$expected" ]] \
-        || fail '应用与此修复工具不匹配。请下载同一次发布的两个文件。'
+        || fail 'The app and repair tool do not match. Download both ZIPs from the same release.' \
+            '应用与此修复工具不匹配。请下载同一次发布的两个文件。'
 done
 
 /usr/bin/xattr -rsd com.apple.quarantine "$app" \
-    || fail '无法移除隔离标记。请确认应用已解压，并位于你可写入的文件夹。'
-attributes=$(/usr/bin/xattr -rs "$app") || fail '无法核对应用的隔离状态。'
+    || fail 'Could not remove the quarantine flag. Unzip the app into a folder you can write to.' \
+        '无法移除隔离标记。请确认应用已解压，并位于你可写入的文件夹。'
+attributes=$(/usr/bin/xattr -rs "$app") || fail 'Could not check the app’s quarantine status.' '无法核对应用的隔离状态。'
 if /usr/bin/grep -Eq '(^|: )com\.apple\.quarantine$' <<< "$attributes"; then
-    fail '应用内仍有隔离标记。请重新解压后再试。'
+    fail 'A quarantine flag remains. Unzip the app again and retry.' '应用内仍有隔离标记。请重新解压后再试。'
 fi
 
-printf '已确认该 RWLaunch.app 没有下载隔离标记。请回到访达，双击打开应用。\n'
+printf '%s\n' "$(message 'Verified: RWLaunch.app has no download quarantine flag. Open it in Finder.' \
+    '已确认该 RWLaunch.app 没有下载隔离标记。请回到访达，双击打开应用。')"
