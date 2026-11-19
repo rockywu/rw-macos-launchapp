@@ -192,12 +192,15 @@ final class LauncherWindow: NSWindow {
         m.addItem(withTitle: "开机时启动", action: #selector(toggleLogin), keyEquivalent: "")
         m.addItem(withTitle: "重新连接触控板", action: #selector(reconnect), keyEquivalent: "")
         m.addItem(withTitle: "系统捏合接管设置…", action: #selector(openAccessibility), keyEquivalent: "")
+        m.addItem(withTitle: "显示菜单栏图标", action: #selector(toggleMenuBarIcon), keyEquivalent: "")
         m.addItem(.separator())
         m.addItem(withTitle: "退出 \(toolName)", action: #selector(quit), keyEquivalent: "q")
         m.items.forEach { $0.target = self }
         return m
     }()
     private var gestureEnabled: Bool { !UserDefaults.standard.bool(forKey: "gestureDisabled") }
+    private let menuBarIconHiddenKey = "menuBarIconHidden"
+    private var menuBarIconVisible: Bool { !UserDefaults.standard.bool(forKey: menuBarIconHiddenKey) }
     func applicationDidFinishLaunching(_ notification: Notification) {
         bar = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         let image = NSImage(systemSymbolName: "square.grid.3x3.fill", accessibilityDescription: toolName)
@@ -205,6 +208,7 @@ final class LauncherWindow: NSWindow {
         bar.button?.image = image
         bar.button?.toolTip = toolName
         bar.menu = menu
+        bar.isVisible = menuBarIconVisible
         menu.items[2].state = gestureEnabled ? .on : .off
         let nc = NSWorkspace.shared.notificationCenter
         nc.addObserver(self, selector: #selector(sleep), name: NSWorkspace.willSleepNotification, object: nil)
@@ -222,6 +226,11 @@ final class LauncherWindow: NSWindow {
     @objc private func toggleGesture() {
         UserDefaults.standard.set(gestureEnabled, forKey: "gestureDisabled")
         updateGesture()
+    }
+    @objc private func toggleMenuBarIcon() {
+        let visible = !menuBarIconVisible
+        UserDefaults.standard.set(!visible, forKey: menuBarIconHiddenKey)
+        bar.isVisible = visible
     }
     @objc private func toggleLogin() {
         do {
@@ -419,6 +428,7 @@ extension Launcher: NSMenuDelegate, NSWindowDelegate {
         }
         let service = SMAppService.mainApp
         m.items[3].state = service.status == .enabled || service.status == .requiresApproval ? .on : .off
+        m.items.first { $0.action == #selector(toggleMenuBarIcon) }?.state = menuBarIconVisible ? .on : .off
     }
     func windowDidResignKey(_ notification: Notification) {
         if !optionsShown && !NSApp.isActive && window?.isVisible == true { hide(restore: false, animated: false) }
