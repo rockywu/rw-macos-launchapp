@@ -10,7 +10,7 @@ A full-screen app launcher for macOS. Pinch with four or five fingers to open it
 
 1. Download `RWLaunch-trial.zip` from [Releases](https://github.com/rockywu/rw-macos-launchapp/releases). Unzip it, move `RWLaunch.app` to **Applications**, and open it. Quit any older copy first.
 2. Pinch with four or five fingers, or click the grid icon in the menu bar and choose **Open Launcher**.
-3. Type to search, or click an app to open it. Press **Esc** to close the grid.
+3. Type to search, or click an app to open it. Press **Esc** once to dismiss the launcher from the grid, search field, or an open folder.
 
 ## What you can do
 

@@ -173,6 +173,7 @@ final class LauncherWindow: NSWindow {
 @MainActor final class Launcher: NSObject, NSApplicationDelegate {
     private var bar: NSStatusItem!
     private var window: LauncherWindow?
+    private var escapeMonitor: Any?
     private var isClosing = false
     private var model = LaunchModel()
     private var previousApp: NSRunningApplication?
@@ -252,6 +253,7 @@ final class LauncherWindow: NSWindow {
     }
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows: Bool) -> Bool { show(); return true }
     func applicationWillTerminate(_ notification: Notification) {
+        removeEscapeMonitor()
         gestureTimer?.invalidate(); SystemPinchStop(); TouchStop()
     }
     @objc private func sleep() { SystemPinchStop(); TouchStop(); gestureOK = false; systemGestureOK = false }
@@ -370,6 +372,17 @@ final class LauncherWindow: NSWindow {
         w.handleKey = { [weak self] evt in self?.handleKey(evt) ?? false }
         w.handleScroll = { [weak self] evt in self?.handleScroll(evt) }
         window = w
+        // Handle plain Escape before a SwiftUI text field or other first responder consumes it.
+        escapeMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self, weak w] event in
+            guard let self, let w, self.window === w, w.isKeyWindow, w.isVisible,
+                  (event.window ?? NSApp.keyWindow) === w, w.attachedSheet == nil,
+                  NSApp.modalWindow == nil, !self.optionsShown,
+                  event.keyCode == 53,
+                  event.modifierFlags.intersection([.command, .control, .option, .shift]).isEmpty
+            else { return event }
+            self.hide(restore: true, animated: false)
+            return nil
+        }
         NSApp.activate()
         w.makeKeyAndOrderFront(nil)
         if !model.isExpanded {
@@ -382,10 +395,14 @@ final class LauncherWindow: NSWindow {
         }
     }
 
+    private func removeEscapeMonitor() {
+        if let escapeMonitor { NSEvent.removeMonitor(escapeMonitor); self.escapeMonitor = nil }
+    }
     private func hide(restore: Bool, animated: Bool = true, completion: @escaping () -> Void = {}) {
         guard let w = window else { completion(); return }
         guard !isClosing else { return }
         isClosing = true
+        removeEscapeMonitor()
         w.ignoresMouseEvents = true
         let finish = { [weak self, weak w] in
             guard let self, let w, self.window === w else { return }
@@ -451,12 +468,6 @@ final class LauncherWindow: NSWindow {
     private func handleKey(_ e: NSEvent) -> Bool {
         if window?.attachedSheet != nil { return false }
         if isClosing { return true }
-        if e.keyCode == 53 {
-            if model.editingName { model.editingName = false }
-            else if model.folderID != nil { model.clearFolder() }
-            else { hide(restore: true) }
-            return true
-        }
         if e.modifierFlags.intersection([.shift, .control, .option, .command]).isEmpty {
             if e.keyCode == 123 || e.keyCode == 124 {
                 if !model.searching && !model.editingName { model.move(e.keyCode == 123 ? -1 : 1); return true }
