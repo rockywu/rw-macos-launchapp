@@ -4,7 +4,7 @@
 
 A full-screen app launcher for macOS. Pinch with four or five fingers to open it. Requires macOS 15 or later; works on Apple silicon and Intel Macs.
 
-![Launcher guide: search at the top, open Options with the ellipsis, or swipe to switch pages](docs/images/launcher-en.svg)
+![RWLaunch in English, with Search Apps above the app grid](docs/images/launcher-en.png)
 
 ## Get started
 
@@ -18,11 +18,15 @@ A full-screen app launcher for macOS. Pinch with four or five fingers to open it
 - **Organize:** Drag beside an icon to reorder. Drop onto an app or folder to group items. Press and hold a folder name to rename it.
 - **Customize:** Hide the menu bar icon, open at login, or choose English or Simplified Chinese.
 
+<img src="docs/images/folder-icon-en.png" width="22%" alt="Utilities folder icon with a preview of its apps">
+<img src="docs/images/folder-open-en.png" width="55%" alt="Utilities folder open as a panel over the launcher">
+
 ## Options menu
 
-Open the menu from the menu bar grid icon or the **…** beside the search field.
+Open the menu from the menu bar grid icon or the **…** beside the search field. You can keep both the pinch shortcut and the menu bar icon on. To turn off either one, make sure the other is on.
 
-![Options menu in English, with the Language submenu expanded](docs/images/options-en.svg)
+<img src="docs/images/options-en.png" width="34%" alt="RWLaunch Options menu in English">
+<img src="docs/images/language-en.png" width="45%" alt="Language submenu with System, English, and Simplified Chinese">
 
 | Option | What it does |
 | --- | --- |

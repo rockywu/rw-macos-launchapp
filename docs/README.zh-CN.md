@@ -4,7 +4,7 @@
 
 macOS 全屏应用启动台。四指或五指向内捏合即可打开。支持 macOS 15 及以上、Apple 芯片和 Intel Mac。
 
-![启动台示意：顶部搜索，点省略号打开设置，左右滑动翻页](images/launcher-zh.svg)
+![RWLaunch 中文启动台，应用网格上方是搜索框](images/launcher-zh.png)
 
 ## 安装和使用
 
@@ -18,11 +18,15 @@ macOS 全屏应用启动台。四指或五指向内捏合即可打开。支持 m
 - **整理：** 拖到图标旁可排序，拖到图标中央可分组。长按文件夹名称可改名。
 - **设置：** 可隐藏菜单栏图标、登录时启动，或切换简体中文和英文。
 
+<img src="images/folder-icon-zh.png" width="22%" alt="实用工具文件夹图标，内有应用缩略图">
+<img src="images/folder-open-zh.png" width="55%" alt="实用工具文件夹在启动台上展开">
+
 ## 菜单说明
 
-点菜单栏九宫格，或点启动台搜索框旁的「…」，都能打开这个菜单。
+点菜单栏九宫格，或点启动台搜索框旁的「…」，都能打开这个菜单。捏合手势和菜单栏图标可以同时开启。要关闭其中一个，请先确认另一个已开启。
 
-![中文设置菜单，已展开语言子菜单](images/options-zh.svg)
+<img src="images/options-zh.png" width="34%" alt="RWLaunch 中文设置菜单">
+<img src="images/language-zh.png" width="45%" alt="语言子菜单：跟随系统、English 和简体中文">
 
 | 菜单项 | 作用 |
 | --- | --- |
