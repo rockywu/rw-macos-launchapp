@@ -2,6 +2,8 @@
 
 用四指或五指往中间捏，打开像旧版 macOS Launchpad 一样的全屏应用网格。独立运行，无需账号、激活或联网。
 
+[GitHub 仓库](https://github.com/rockywu/rw-macos-launchapp) · [发布页](https://github.com/rockywu/rw-macos-launchapp/releases)
+
 ## 安装和操作
 
 1. 退出旧版 RWLaunch，解压并打开新版。启动台右上区域的「…」与菜单栏九宫格图标提供相同的设置入口。取消勾选「显示菜单栏图标」即可隐藏九宫格，重启后仍会保留此设置。要恢复图标，用捏合手势或在访达中打开 RWLaunch，再从启动台的「…」重新勾选。
@@ -15,7 +17,19 @@
 
 手势接管只处理识别到的系统向内捏合。需要实机验证系统「Apps」是否被拦住、向外张开是否仍按系统设置工作，以及退出 RWLaunch 后系统捏合是否恢复。若授权后仍同时出现两个界面，可到「系统设置 → 触控板 → 更多手势」手动关闭「App／Apps」作为暂时办法；手动改动须由你手动改回。菜单栏入口不依赖触控板接口。
 
-此安装包用本地临时签名构建，适合本机试用。分发给同事前建议由公司用自己的 Apple Developer ID 签名并公证。这个试用包未公证，也没有在同事的电脑上做安装验证。
+## 下载后提示「已损坏」或无法打开
+
+试用包有临时签名，但没有 Apple Developer ID 签名或公证。先从项目的发布页下载并解压试用包。若 macOS 仅提示「无法验证开发者」，优先按 [Apple 的说明](https://support.apple.com/zh-cn/102445)，在「系统设置 → 隐私与安全性」对 RWLaunch 选择「仍要打开」。
+
+若可信来源的试用包提示「已损坏」，而系统没有提供「仍要打开」：
+
+1. 单独下载同一次发布的 `RWLaunch-repair.zip` 并解压。应用本身在 `RWLaunch-trial.zip` 中。
+2. 双击 `Repair RWLaunch.command`，在文件选择器中选中已解压的 `RWLaunch.app`。工具先核对该版应用的签名指纹和文件完整性，再仅移除这个 App 的下载隔离标记。工具不需要管理员权限，也不更改 Gatekeeper 设置。
+3. 看到成功提示后，回到访达双击 RWLaunch。若校验失败，请重新下载对应的试用包和工具；若系统报告含有恶意软件，不要使用修复工具。
+
+如果 macOS 拦截从项目下载的 `.command`，可在「终端」输入 `/bin/bash `（末尾有空格），把解压出的 `.command` 拖进去后按回车。然后在文件选择器里选择应用。
+
+`spctl --assess` 可查看系统评估结果。它不会把试用包变成已公证应用。面向公众分发时，建议使用 Apple Developer ID 签名和公证。
 
 ## 卸载与移除权限
 
@@ -27,7 +41,12 @@
 
 ```sh
 ./build.sh "$PWD/build/RWLaunch.app"
+./package.sh "$PWD/build/RWLaunch.app" "$PWD/build/release"
 CI=true ./test.sh
 ```
+
+`package.sh` 生成可分别下载的试用包和修复工具 ZIP。两者由同一次构建配对，请一同提供。
+
+通过 SSH 克隆：`git clone git@github.com:rockywu/rw-macos-launchapp.git`。
 
 应用通过系统接口发现和启动，布局存储在本机。触控坐标在内存中处理，不存储轨迹或上传。默认触控设备的结构定义来自 [OpenMultitouchSupport](https://github.com/Kyome22/OpenMultitouchSupport)，其 MIT 许可证随应用分发。
