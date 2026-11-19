@@ -41,6 +41,7 @@ struct LauncherView: View {
     let topInset: CGFloat
     let openPermissionSettings: () -> Void
     let menu: () -> Void
+    let requestUninstall: (InstalledApp) -> Void
     private var language: AppLanguage { model.language }
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @FocusState private var focus: Field?
@@ -525,6 +526,7 @@ struct LauncherView: View {
                 return .handled
             }
             .accessibilityRepresentation { Button(item.name) { activate(item) } }
+            .accessibilityActions { uninstallAction(item) }
             .help(item.name)
             .contextMenu {
                 if !model.searching {
@@ -542,7 +544,17 @@ struct LauncherView: View {
                         }
                     }
                 }
+                if case .app(let app) = item, AppUninstall.offered(for: app.url) {
+                    if !model.searching { Divider() }
+                    uninstallAction(item)
+                }
             }
+    }
+
+    @ViewBuilder private func uninstallAction(_ item: GridItemValue) -> some View {
+        if case .app(let app) = item, AppUninstall.offered(for: app.url) {
+            Button(language.text("Uninstall…"), role: .destructive) { requestUninstall(app) }
+        }
     }
 
     private func dragGesture(_ m: Metrics) -> some Gesture {

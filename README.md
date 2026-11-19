@@ -16,6 +16,7 @@ A full-screen app launcher for macOS. Pinch with four or five fingers to open it
 
 - **Browse:** Swipe sideways with two fingers, use the arrow keys, or click the page dots.
 - **Organize:** Drag beside an icon to reorder. Drop onto an app or folder to group items. Press and hold a folder name to rename it.
+- **Uninstall:** Right-click an app, choose **Uninstall…**, then confirm its name and location before moving it to Trash. You can put it back until the Trash is emptied. Protected system apps do not offer this action.
 - **Customize:** Hide the menu bar icon, open at login, or choose English or Simplified Chinese.
 
 <img src="docs/images/folder-icon-en.png" width="22%" alt="Utilities folder icon with a preview of its apps">

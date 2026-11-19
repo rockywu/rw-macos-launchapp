@@ -363,7 +363,8 @@ final class LauncherWindow: NSWindow {
         w.contentView = LauncherHostingView(rootView: LauncherView(
             model: model, wallpaper: wall, topInset: screen.safeAreaInsets.top,
             openPermissionSettings: { [weak self] in self?.openAccessibility() },
-            menu: { [weak self] in self?.openOptions() }
+            menu: { [weak self] in self?.openOptions() },
+            requestUninstall: { [weak self] app in self?.requestUninstall(app) }
         ))
         w.setFrame(screen.frame, display: true)
         w.handleKey = { [weak self] evt in self?.handleKey(evt) ?? false }
@@ -416,7 +417,39 @@ final class LauncherWindow: NSWindow {
             }
         }
     }
+    private func requestUninstall(_ app: InstalledApp) {
+        guard let window, window.attachedSheet == nil else { return }
+        let language = model.language
+        func showError(_ message: String) {
+            let alert = NSAlert()
+            alert.messageText = language.text("Couldn’t Uninstall App")
+            alert.informativeText = message
+            alert.addButton(withTitle: language.text("OK"))
+            alert.beginSheetModal(for: window, completionHandler: nil)
+        }
+        let changed = language.text("The selected app has changed or cannot be uninstalled here.")
+        guard let target = AppUninstall(app.url, bundleID: app.bundleID) else { showError(changed); return }
+        let alert = NSAlert()
+        alert.alertStyle = .warning
+        alert.messageText = String(format: language.text("Uninstall “%@”?"), app.name)
+        alert.informativeText = target.url.path + "\n\n" + language.text("The app will move to Trash. Its documents and settings will be kept.")
+        let cancel = alert.addButton(withTitle: language.text("Cancel"))
+        cancel.keyEquivalent = "\r"
+        let remove = alert.addButton(withTitle: language.text("Move to Trash"))
+        remove.hasDestructiveAction = true
+        remove.keyEquivalent = ""
+        alert.beginSheetModal(for: window) { [weak self] response in
+            guard response == .alertSecondButtonReturn else { return }
+            do {
+                try target.moveToTrash()
+                self?.model.didUninstall(app)
+            } catch AppUninstall.Failure.changed { showError(changed) }
+            catch AppUninstall.Failure.running { showError(language.text("Quit the app before uninstalling it.")) }
+            catch { showError(error.localizedDescription) }
+        }
+    }
     private func handleKey(_ e: NSEvent) -> Bool {
+        if window?.attachedSheet != nil { return false }
         if isClosing { return true }
         if e.keyCode == 53 {
             if model.editingName { model.editingName = false }

@@ -142,6 +142,18 @@ import SwiftUI
         if visibleItems.isEmpty { clearFolder() }
         else { resetPage(page) }
     }
+    func didUninstall(_ app: InstalledApp) {
+        guard indexed[app.bundleID]?.url == app.url else { return }
+        apps.removeAll { $0.bundleID == app.bundleID }
+        indexed[app.bundleID] = nil
+        available.remove(app.bundleID)
+        var updated = layout
+        if updated.dissolveSmallFolders(available: available) { save(updated) }
+        if folderID != nil && visibleItems.isEmpty { clearFolder() }
+        else { resetPage(page) }
+        // Root and search can change even when neither the page nor layout changes.
+        objectWillChange.send()
+    }
     func extract(_ entry: Entry, from folder: String, onto target: Entry?, placement: DropPlacement?) {
         guard folderID == nil else { return }
         save(extractionLayout(entry, from: folder, onto: target, placement: placement))

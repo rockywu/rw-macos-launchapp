@@ -9,3 +9,5 @@ xcrun clang -std=c17 -Wall -Wextra -Werror -O2 -ISources Sources/PinchRoute.c Te
 "$scratch/route-test"
 xcrun swiftc Sources/Layout.swift Sources/PageSwipe.swift Tests/LayoutTests.swift -o "$scratch/layout-test"
 "$scratch/layout-test"
+xcrun swiftc Sources/AppUninstall.swift Tests/AppUninstallTests.swift -o "$scratch/uninstall-test"
+"$scratch/uninstall-test"

@@ -14,6 +14,14 @@
 "Couldn’t Change Login Setting" = "无法更改登录时启动";
 "Couldn’t Open App" = "无法打开应用";
 "OK" = "好";
+"Uninstall…" = "卸载…";
+"Uninstall “%@”?" = "卸载「%@」？";
+"The app will move to Trash. Its documents and settings will be kept." = "应用将移到废纸篓，文稿和设置会保留。";
+"Cancel" = "取消";
+"Move to Trash" = "移到废纸篓";
+"Couldn’t Uninstall App" = "无法卸载应用";
+"The selected app has changed or cannot be uninstalled here." = "所选应用已更改，或不支持从这里卸载。";
+"Quit the app before uninstalling it." = "请先退出应用，再卸载。";
 "Accessibility" = "辅助功能";
 "Device Control & Data Access" = "设备控制和数据访问";
 "System Pinch Is Not Active" = "系统捏合尚未接管";
